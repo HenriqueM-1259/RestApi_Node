@@ -9,7 +9,7 @@ router.get('/',(req,res,next) => {
 
 router.post('/',(req,res,next)=>{
     res.status(200).send({
-        mensagem: "Usando post dentro da rota pedido"
+        mensagem: "Usando post dentro da rota pedidos"
     })
 })
 
