@@ -9,7 +9,24 @@ router.get('/',(req,res,next) => {
             'SELECT * FROM Produtos',
             (erros,resultado,field) => {
                 if(erros){return res.status(500).send({error:erros})}
-                return res.status(200).send({response:resultado})
+                console.log(resultado)
+                const response = {
+                    
+                    quantidade: resultado.length,
+                    produtos: resultado.map(prod => {
+                        return {
+                            id_produto: prod.idProdutos,
+                            nome: prod.Nome,
+                            preco: prod.Preco,
+                            request: {
+                                Tipo: 'Get',
+                                descricao: "Retorna todos os produtos",
+                                url: "/produtos/" + prod.idProdutos
+                            }
+                        }
+                    })
+                }
+                return res.status(200).send({response})
             }
         )
         
@@ -24,7 +41,7 @@ router.post('/',(req,res,next)=>{
         conn.query(
             'INSERT INTO Produtos (nome,preco) VALUES (?,?)',
             [req.body.nome,req.body.preco],
-            (error,resultado,field) => {
+            (error,result,field) => {
                 conn.release();
 
                 if(error){
@@ -33,11 +50,24 @@ router.post('/',(req,res,next)=>{
                         response: null,
                     })
                 }
-
+                const response = {
+                    mensagem: 'Produto criado com sucesso',
+                    ProdutoCriado: 
+                         {
+                            id_produto: result.idProdutos,
+                            nome: result.Nome,
+                            preco: result.Preco,
+                            request: {
+                                Tipo: 'Post',
+                                descricao: "Insere um produto",
+                                url: "/produtos/" + result.idProdutos
+                            }
+                        }
+                }
                 return res.status(201).send({
-                    mensagem: "Produto Inserido com sucesso",
-                    Id_produto : resultado.insertId
+                    response
                 })
+               
             })
         
     })
@@ -49,7 +79,7 @@ router.patch('/',(req,res,next)=>{
         conn.query(
             'UPDATE Produtos SET Nome = ? ,Preco = ? where idProdutos = ?',
             [req.body.nome, req.body.preco, req.body.id_produto],
-            (error,resultado,field) => {
+            (error,result,field) => {
                 conn.release();
 
                 if(error){
@@ -58,10 +88,24 @@ router.patch('/',(req,res,next)=>{
                         response: null,
                     })
                 }
-
+                const response = {
+                    
+                    mensagem: 'Produto Alterado com sucesso',
+                    ProdutoAlterado: 
+                         {
+                            id_produto: req.body.idProdutos,
+                            nome: req.body.nome,
+                            preco: req.body.preco,
+                            request: {
+                                Tipo: 'Patch',
+                                descricao: "Altera um produto",
+                                url: "/produtos/" + result.idProdutos
+                            }
+                        }
+                }
+                
                 return res.status(202).send({
-                    mensagem: "Produto Alterado com sucesso",
-                    Id_produto : resultado
+                    response
                 })
             })
         
@@ -70,9 +114,25 @@ router.patch('/',(req,res,next)=>{
 router.get('/:id_produto', (req,res,next) => {
       mysql.getConnection((error,conn) => {
         conn.query('SELECT * FROM Produtos WHERE idProdutos = ?',[req.params.id_produto],
-        (error,resultado,field) => {
+        (error,result,field) => {
             if(error) {return res.status(500).send({error:error})}
-            return res.status(200).send({response:resultado})
+            const response = {
+                    
+                quantidade: result.length,
+                produtos: result.map(prod => {
+                    return {
+                        id_produto: prod.idProdutos,
+                        nome: prod.Nome,
+                        preco: prod.Preco,
+                        request: {
+                            Tipo: 'Get',
+                            descricao: "Retorna somente o produto do id",
+                            url: "/produtos/" + prod.idProdutos
+                        }
+                    }
+                })
+            }
+            return res.status(200).send({response})
         })
     })
     
