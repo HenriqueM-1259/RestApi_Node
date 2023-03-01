@@ -7,7 +7,6 @@ function GetAllArtista(req,res,next){
             'SELECT * FROM Artista',
             (erros,resultado,field) => {
                 if(erros){return res.status(500).send({error:erros})}
-            
                 return res.status(200).send({response:resultado})
             }
         )
@@ -21,8 +20,7 @@ function GetIdArtista(req,res,next){
         conn.query(
             'SELECT * FROM Artista WHERE idArtista = ?',[req.params.idArtista],
             (erros,resultado,field) => {
-                if(erros){return res.status(500).send({error:erros})}
-                
+                if(erros){return res.status(500).send({error:erros})}   
                 return res.status(200).send({response:resultado})
             }
         )
