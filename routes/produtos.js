@@ -4,20 +4,15 @@ const mysql = require('../mysql').pool;
 
 router.get('/',(req,res,next) => {
     mysql.getConnection((erros,conn) => {
-        conn.query("SELECT * FROM Produtos"),[],
-        (error,resultado,field) => {
-            conn.release();
-            if(error){
-                return res.status(500).send({
-                    erros: error,
-                    response:null
-                })
+        if(erros){return res.status(500).send({error:erros})}
+        conn.query(
+            'SELECT * FROM Produtos',
+            (erros,resultado,field) => {
+                if(erros){return res.status(500).send({error:erros})}
+                return res.status(200).send({response:resultado})
             }
-            return res.status(200).send({
-                response:resultado
-            })
-
-        }
+        )
+        
     })
     
 })
@@ -47,33 +42,65 @@ router.post('/',(req,res,next)=>{
         
     })
 })
+router.patch('/',(req,res,next)=>{
+    mysql.getConnection((error,conn) => {
+        debugger
+        console.log(conn)
+        conn.query(
+            'UPDATE Produtos SET Nome = ? ,Preco = ? where idProdutos = ?',
+            [req.body.nome, req.body.preco, req.body.id_produto],
+            (error,resultado,field) => {
+                conn.release();
 
+                if(error){
+                    return res.status(500).send({
+                        erros:error,
+                        response: null,
+                    })
+                }
+
+                return res.status(202).send({
+                    mensagem: "Produto Alterado com sucesso",
+                    Id_produto : resultado
+                })
+            })
+        
+    })
+})
 router.get('/:id_produto', (req,res,next) => {
-
-    const id = req.params.id_produto
-    if(id == ""){
-        res.status(200).send({
-            mendagem: "Id nullo",
-            id: id
-            })
-    }else{
-        res.status(200).send({
-            mendagem: "Retorna um produto com id",
-            id: id
-            })
-    }
+      mysql.getConnection((error,conn) => {
+        conn.query('SELECT * FROM Produtos WHERE idProdutos = ?',[req.params.id_produto],
+        (error,resultado,field) => {
+            if(error) {return res.status(500).send({error:error})}
+            return res.status(200).send({response:resultado})
+        })
+    })
     
 })
 
-router.patch('/',(req,res,next) => {
-    res.status(200).send({
-        mensagem: "USando o PATCH dentro da rota de produtos"
-    })
-})
-
 router.delete('/',(req,res,next) => {
-    res.status(200).send({
-        mensagem: "USando o DELETE dentro da rota de produtos"
+    mysql.getConnection((error,conn) => {
+        debugger
+        console.log(conn)
+        conn.query(
+            'DELETE FROM Produtos where idProdutos = ?',
+            [req.body.id_produto],
+            (error,resultado,field) => {
+                conn.release();
+
+                if(error){
+                    return res.status(500).send({
+                        erros:error,
+                        response: null,
+                    })
+                }
+
+                return res.status(202).send({
+                    mensagem: "Produto deletado com sucesso",
+                    Id_produto : resultado
+                })
+            })
+        
     })
 })
 
