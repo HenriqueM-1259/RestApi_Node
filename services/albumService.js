@@ -16,7 +16,21 @@ function GetAllAlbumArtistas(req,res,next){
         
     })
 }
-
+function GetAllAlbum(req,res,next){
+    mysql.getConnection((erros,conn) => {
+        
+        if(erros){return res.status(500).send({error:erros})}
+        conn.query(
+            'SELECT * FROM Album',
+            (erros,resultado,field) => {
+                conn.release();
+                if(erros){return res.status(500).send({error:erros})}
+                return res.status(200).send({response:resultado})
+            }
+        )
+        
+    })
+}
 function PostAlbum(req,res,next){
     var pathAlbumArtista = "";
     mysql.getConnection((erros,conn) => {
@@ -34,7 +48,7 @@ function PostAlbum(req,res,next){
     mysql.getConnection((erros,conn) => {
         if(erros){return res.status(500).send({error:erros})}
         conn.query(
-            'INSERT INTO Album (nome,descricao,dataCriacao,path,Artista_idArtista) VALUES (?,?,?,?,?) ',
+            'INSERT INTO Album (nome,decricao,dataCriacao,path,Artista_idArtista) VALUES (?,?,?,?,?) ',
             [req.body.nome,req.body.descricao, new Date(), `/${req.body.nome}`, req.body.idArtista],
             (erros,result,field) => {
                 conn.release();
@@ -52,3 +66,4 @@ function PostAlbum(req,res,next){
 }
 exports.PostAlbum = PostAlbum;
 exports.GetAllAlbumArtistas = GetAllAlbumArtistas;
+exports.GetAllAlbum = GetAllAlbum;

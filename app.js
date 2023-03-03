@@ -7,6 +7,7 @@ const rotaProdutos = require('./routes/produtos')
 const rotaPedidos = require('./routes/pedidos')
 const rotaArtista = require('./routes/artistaController')
 const rotaAlbum = require('./routes/albumController')
+const rotaMusica = require('./routes/musicaController')
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:false}))
@@ -31,6 +32,7 @@ app.use('/produtos', rotaProdutos);
 app.use('/pedidos', rotaPedidos);
 app.use('/artista', rotaArtista);
 app.use('/album', rotaAlbum);
+app.use('/musica', rotaMusica);
 
 app.use((req,res,next) => {
     const erro = new Error("Nao encontramos essa rota");
