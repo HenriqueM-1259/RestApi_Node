@@ -13,6 +13,13 @@ function CriaPastaAlbumArtista(diretorio){
         fs.mkdirSync(dir + diretorio);
     }
 }
+function UploadMusica(diretorio){
+    console.log(diretorio)
+    if (!fs.existsSync(dir + diretorio)){
+        
+        fs.mkdirSync(dir + diretorio);
+    }
+}
 
 exports.CriaPastaArtista = CriaPastaArtista;
 exports.CriaPastaAlbumArtista = CriaPastaAlbumArtista;
