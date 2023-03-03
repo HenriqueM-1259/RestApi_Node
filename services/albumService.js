@@ -48,8 +48,8 @@ function PostAlbum(req,res,next){
     mysql.getConnection((erros,conn) => {
         if(erros){return res.status(500).send({error:erros})}
         conn.query(
-            'INSERT INTO Album (nome,decricao,dataCriacao,path,Artista_idArtista) VALUES (?,?,?,?,?) ',
-            [req.body.nome,req.body.descricao, new Date(), `/${req.body.nome}`, req.body.idArtista],
+            'INSERT INTO Album (nome,descricao,dataCriacao,path,Artista_idArtista) VALUES (?,?,?,?,?) ',
+            [req.body.nome,req.body.descricao, new Date(), `${pathAlbumArtista}/${req.body.nome}`, req.body.idArtista],
             (erros,result,field) => {
                 conn.release();
                 if(erros){return res.status(500).send({error:erros})}  

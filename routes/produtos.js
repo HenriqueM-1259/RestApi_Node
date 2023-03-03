@@ -34,7 +34,7 @@ router.get('/',(req,res,next) => {
     
 })
 
-router.post('/',upload.single('imagem'),(req,res,next)=>{
+router.post('/',(req,res,next)=>{
     console.log(req.file);
     mysql.getConnection((error,conn) => {
         debugger
